@@ -28,6 +28,19 @@ $capsule->addConnection($container['settings']['db']);
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
+$container['validator'] = function ($container) {
+    return new App\Utils\Validator;
+};
+
+$container['flash'] = function ($container) {
+    return new Slim\Flash\Messages;
+};
+
+$container['auth'] = function ($container) {
+    return new App\Auth\Auth($container);
+};
+
+
 $container['view'] = function ($container) {
     $view = new Slim\Views\Twig(__DIR__ . '/../resources/views', [
         'cache' => false
@@ -37,6 +50,14 @@ $container['view'] = function ($container) {
         $container->router,
         $container->request->getUri()
     ));
+
+    $view->getEnvironment()->addGlobal('flash', $container->flash);
+
+    $view->getEnvironment()->addGlobal('auth', [
+        'check' => $container->auth->check(),
+        'user' => $container->auth->user(),
+    ]);
+
     return $view;
 };
 
@@ -47,6 +68,8 @@ $container['HomeController'] = function ($container) {
 $container['AuthController'] = function ($container) {
     return new App\Controllers\AuthController($container);
 };
+
+$app->add(new App\Middleware\ErrorsMiddleware($container));
 
 require __DIR__ . '/routes.php';
 
