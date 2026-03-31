@@ -2,7 +2,10 @@
 
 namespace App\Controllers;
 
-class AuthController extends Controller {
+use App\Models\User;
+
+class AuthController extends Controller
+{
 
     public function login($request, $response)
     {
@@ -14,18 +17,16 @@ class AuthController extends Controller {
         if ($request->isGet())
             return $this->container->view->render($response, 'register.twig');
 
-        $horadataatual = new \DateTime(date('d/m/y H:i'));
+        $horadataatual = new \Datetime(date('d/m/Y H:i:s'));
 
         User::create([
             'name' => $request->getParam('name'),
             'email' => $request->getParam('email'),
             'password' => $request->getParam('password'),
-            'confirmation_key' => str_random(40),
+            'confirmation_key' => 'dsadasdas',
             'confirmation_expires' => $horadataatual
-
         ]);
 
         $response->withRedirect($this->container->router->pathFor('auth.login'));
     }
-
 }

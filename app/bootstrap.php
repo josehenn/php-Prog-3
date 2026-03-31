@@ -13,7 +13,7 @@ $app = new Slim\App(
             'db' => [
                 'driver' => 'mysql',
                 'host' => 'localhost',
-                'database' => 'slim',
+                'database' => 'unoesc',
                 'username' => 'root',
                 'password' => '',
             ]
@@ -37,7 +37,6 @@ $container['view'] = function ($container) {
         $container->router,
         $container->request->getUri()
     ));
-
     return $view;
 };
 
@@ -50,3 +49,7 @@ $container['AuthController'] = function ($container) {
 };
 
 require __DIR__ . '/routes.php';
+
+
+
+
